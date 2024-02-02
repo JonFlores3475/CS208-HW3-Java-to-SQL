@@ -363,6 +363,7 @@ public class Database
 
                 // TODO: add your code here
                 System.out.printf("| %d | %s | %s | %s |%n", id, firstName, lastName, birthDate);
+                //added here because I fumbled the original commit
             }
         }
         catch (SQLException sqlException)
