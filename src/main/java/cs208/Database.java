@@ -382,37 +382,7 @@ public class Database
         // sqlStatement.setDate(columnIndexTBD, newStudent.getBirthDate());
 
         // TODO: add your code here
-        String sql1 =
-                "SELECT max(students.id)" +
-                        "From students;";
-        String sql2 =
-                "INSERT INTO students (id, first_name, last_name, birth_date)\n" +
-                        "VALUES (?, ?, ?, ?);";
-
-        try
-                (
-                        Connection connection = getDatabaseConnection();
-                        PreparedStatement sqlStatement = connection.prepareStatement(sql2, Statement.RETURN_GENERATED_KEYS);
-                        Statement res = connection.createStatement();
-                        ResultSet resultSet = res.executeQuery(sql1);
-                ) {
-            int id = resultSet.getInt(1) + 1;
-            newStudent.setId(id);
-            sqlStatement.setInt(1, newStudent.getId());
-            sqlStatement.setString(2, newStudent.getFirstName());
-            sqlStatement.setString(3, newStudent.getLastName());
-            sqlStatement.setString(4, newStudent.getBirthDate().toString());
-
-            int numberOfRowsAffected = sqlStatement.executeUpdate();
-            System.out.println("numberOfRowsAffected = " + numberOfRowsAffected);
-        }
-        catch (SQLException sqlException)
-        {
-            System.out.println("!!! SQLException: failed to insert into the Student table");
-            System.out.println(sqlException.getMessage());
-        }
     }
-
 
     public void listAllRegisteredStudents()
     {
