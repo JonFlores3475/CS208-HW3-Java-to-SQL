@@ -146,6 +146,7 @@ public class Main
     {
         System.out.println("Testing database connection...");
         database.testConnection();
+
     }
 
     public static void menuListAllClasses()
@@ -250,8 +251,7 @@ public class Main
 
     private static void menuAddNewStudent()
     {
-        System.out.println("Adding new student...");
-
+        System.out.println("Adding new student...");;
         String firstName = null;
         String lastName = null;
         Date birthDate = null;
@@ -259,8 +259,13 @@ public class Main
         {
             // TODO: add your code here
 
+            System.out.println(("Enter the student's first name: "));
+            firstName = String.valueOf(inputScanner.nextLine());
+            System.out.println(("Enter the student's last name: "));
+            lastName = String.valueOf(inputScanner.nextLine());
             System.out.print("Enter the student birth date in ISO format (yyyy-mm-dd): ");
             birthDate = Date.valueOf(inputScanner.nextLine());
+
         }
         catch (Exception e)
         {
@@ -269,6 +274,7 @@ public class Main
         }
 
         // TODO: add your code here
+        database.addNewStudent(new Student(firstName,lastName,birthDate));
     }
 
     private static void menuUpdateExistingStudentInformation()
