@@ -279,8 +279,10 @@ public class Main
 
     private static void menuUpdateExistingStudentInformation()
     {
+        System.out.println("Enter the student's id:");
+        int studentID = Integer.parseInt(inputScanner.nextLine());
+        database.UpdateExistingStudentInformation(studentID);
         System.out.println("Updating existing student information...");
-
         // TODO: add your code here
     }
 

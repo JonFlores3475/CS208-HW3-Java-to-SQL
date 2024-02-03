@@ -1,14 +1,10 @@
 package cs208;
+import java.sql.*;
+import java.util.Scanner;
 
 import org.sqlite.SQLiteConfig;
 
-import java.sql.Connection;
 import java.sql.Date;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 
 /**
@@ -412,6 +408,76 @@ public class Database
             System.out.println("!!! SQLException: failed to insert into the classes table");
             System.out.println(sqlException.getMessage());
         }
+    }
+    public void UpdateExistingStudentInformation(int studentID){
+
+        int newid = 0;
+        boolean uniqueid = false;
+        int choice;
+        boolean shouldexit = false;
+        Scanner inputScanner = new Scanner(System.in);
+        String sql =
+                "SELECT *\n" +
+                        "FROM students\n" +
+                        "WHERE students.id = ?";
+        try {
+            Connection connection = getDatabaseConnection();
+            PreparedStatement res = connection.prepareStatement(sql,studentID);
+            {
+                while (!shouldexit) {
+                    System.out.println("What would you like to alter?");
+                    System.out.println(" 0 - Student ID (note: must be unique within the table).");
+                    System.out.println(" 1 - Student First Name");
+                    System.out.println(" 2 - Student Last Name");
+                    System.out.println(" 3 - Student Date of Birth");
+
+                    try {
+                        choice = Integer.parseInt(inputScanner.nextLine());
+                    } catch (Exception e) {
+                        System.out.println("Invalid choice, expected an integer value. Please enter a number such as 0, 1, 2, or 3.");
+                        continue;
+                    }
+                    shouldexit = true;
+                    switch (choice) {
+                        case 0:
+                            while (!uniqueid) {
+                                try {
+                                    System.out.println("Enter a new, unique integer student ID.");
+                                    newid = inputScanner.nextInt();
+                                    String sql1 = "SELECT students.id\n" +
+                                            "FROM students\n" +
+                                            "WHERE students.id";
+                                    Statement sqlStatement = connection.createStatement();
+                                    ResultSet resultSet2 = sqlStatement.executeQuery(sql1 + "=" + newid);
+                                    if (!resultSet2.next()) {
+                                        uniqueid = true;
+                                        String sql2 = "UPDATE students\n" +
+                                                "SET id = ?\n" +
+                                                "WHERE id = ?";
+                                        PreparedStatement sqlStatement2 = connection.prepareStatement(sql2);
+                                        sqlStatement2.setInt(1,newid);
+                                        sqlStatement2.setInt(2,studentID);
+                                        sqlStatement2.execute();
+                                        break;
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    e.getMessage();
+                                    System.out.println("Enter a new, unique integer student ID.");
+                                    System.exit(1);
+                                }
+                            }
+                        case 1:
+                            return;
+                    }
+                }
+            }
+        }
+        catch (SQLException sqlException)
+    {
+        System.out.println("!!! SQLException: failed to alter Students table");
+        System.out.println(sqlException.getMessage());
+    }
     }
 
     public void listAllRegisteredStudents()
