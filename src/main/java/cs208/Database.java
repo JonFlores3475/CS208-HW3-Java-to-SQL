@@ -413,11 +413,12 @@ public class Database
         int studentIDretry = 0;
         int newid = 0;
         String newname = null;
+        Date birthdate = null;
         boolean working = false;
         boolean uniqueid = false;
         int choice;
         boolean shouldexit = false;
-        Scanner inputScanner = new Scanner(System.in);
+        Scanner inputScannersub = new Scanner(System.in);
         String sql =
                 "SELECT *\n" +
                         "FROM students\n" +
@@ -428,7 +429,7 @@ public class Database
             ResultSet ResultSet0 = res.executeQuery(sql + "=" + studentID + ";");
             if (!ResultSet0.next()) {
                 System.out.println("Invalid ID number, try entering a valid student ID here: ");
-                studentIDretry = inputScanner.nextInt();
+                studentIDretry = inputScannersub.nextInt();
                 UpdateExistingStudentInformation(studentIDretry);
             }
                 while (!shouldexit) {
@@ -439,7 +440,7 @@ public class Database
                     System.out.println(" 3 - Student Date of Birth");
 
                         try {
-                            choice = Integer.parseInt(inputScanner.nextLine());
+                            choice = Integer.parseInt(inputScannersub.nextLine());
                         } catch (Exception e) {
                             System.out.println("Invalid choice, expected an integer value. Please enter a number such as 0, 1, 2, or 3.");
                             continue;
@@ -450,7 +451,7 @@ public class Database
                                 while (!uniqueid) {
                                     try {
                                         System.out.println("Enter a new, unique integer student ID.");
-                                        newid = inputScanner.nextInt();
+                                        newid = inputScannersub.nextInt();
                                         String sql1 = "SELECT students.id\n" +
                                                 "FROM students\n" +
                                                 "WHERE students.id";
@@ -465,8 +466,8 @@ public class Database
                                             sqlStatement2.setInt(1,newid);
                                             sqlStatement2.setInt(2,studentID);
                                             sqlStatement2.execute();
-                                            break;
                                         }
+                                        connection.close();
                                     } catch (Exception e) {
                                         System.out.println("Invalid input, please try again.");
                                     }
@@ -475,7 +476,7 @@ public class Database
                                 while(!working){
                                     try{
                                         System.out.println("Please enter the student's new first name: ");
-                                        newname = inputScanner.next();
+                                        newname = inputScannersub.next();
                                         String sql3 = "UPDATE students\n" +
                                                 "SET first_name = ?\n" +
                                                 "WHERE id = ?";
@@ -484,12 +485,52 @@ public class Database
                                         sqlStatement2.setInt(2,studentID);
                                         sqlStatement2.execute();
                                         working = true;
+                                        connection.close();
                                     }
                                     catch(Exception e){
-                                        e.getMessage();
+                                        System.out.println("Invalid input, please try again.");
+                                    }
+                                }
+                            case 2:
+                                while(!working){
+                                    try{
+                                        System.out.println("Please enter the student's new last name: ");
+                                        newname = inputScannersub.nextLine();
+
+                                        String sql4 = "UPDATE students\n" +
+                                                "SET last_name = ?\n" +
+                                                "WHERE id = ?";
+                                        PreparedStatement sqlStatement2 = connection.prepareStatement(sql4);
+                                        sqlStatement2.setString(1,newname);
+                                        sqlStatement2.setInt(2,studentID);
+                                        sqlStatement2.execute();
+                                        working = true;
+                                        connection.close();
+                                    }
+                                    catch(Exception e){
                                         e.printStackTrace();
+                                        e.getMessage();
                                         System.out.println("Invalid input, please try again.");
                                         System.exit(1);
+                                    }
+                                }
+                            case 3:
+                                while(!working){
+                                    try{
+                                        System.out.println("Please enter the student's new Date of Birth in YYYY-MM-DD format: ");
+                                        birthdate = Date.valueOf(inputScannersub.nextLine());
+                                        String sql5 = "UPDATE students\n" +
+                                                "SET birth_date = ?\n" +
+                                                "WHERE id = ?";
+                                        PreparedStatement sqlStatement2 = connection.prepareStatement(sql5);
+                                        sqlStatement2.setString(1,birthdate.toString());
+                                        sqlStatement2.setInt(2,studentID);
+                                        sqlStatement2.execute();
+                                        working = true;
+                                        connection.close();
+                                    }
+                                    catch(Exception e){
+                                        System.out.println("Invalid input, please try again.");
                                     }
                                 }
                         }
@@ -500,7 +541,7 @@ public class Database
                 System.out.println("!!! SQLException: failed to alter Students table");
                 System.out.println(sqlException.getMessage());
             }
-        }
+    }
 
     public void listAllRegisteredStudents()
     {
