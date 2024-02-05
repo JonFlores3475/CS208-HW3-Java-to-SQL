@@ -216,7 +216,6 @@ public class Main
         }
         catch (Exception e)
         {
-            System.out.println("Invalid input, please try again.");
             return;
         }
 
