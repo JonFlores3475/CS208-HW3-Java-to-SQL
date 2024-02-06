@@ -808,6 +808,139 @@ public class Database
             System.out.println(sqlException.getMessage());
         }
     }
+    public void DeleteExistingStudent(int studentID){
+            int studentIDretry = 0;
+            Scanner inputScannersub = new Scanner(System.in);
+            String sql =
+                    "SELECT *\n" +
+                            "FROM students\n" +
+                            "WHERE students.id";
+            try {
+                Connection connection = getDatabaseConnection();
+                Statement res = connection.createStatement();
+                ResultSet ResultSet0 = res.executeQuery(sql + "=" + studentID + ";");
+                if (!ResultSet0.next()) {
+                    System.out.println("Invalid ID number, try entering a valid student ID here: ");
+                    studentIDretry = inputScannersub.nextInt();
+                    DeleteExistingStudent(studentIDretry);
+                }
+                    String sql1 = "DELETE\n" +
+                            "FROM students\n" +
+                            "WHERE students.id = ?";
+                    String sql2 = "DELETE\n" +
+                            " FROM registered_students\n" +
+                            "WHERE student_id = ?";
+                    try {
+                        PreparedStatement preparedStatement2 = connection.prepareStatement(sql2);
+                        preparedStatement2.setInt(1, studentID);
+                        preparedStatement2.execute();
+                        PreparedStatement preparedStatement = connection.prepareStatement(sql1);
+                        preparedStatement.setInt(1, studentID);
+                        preparedStatement.execute();
+                        connection.close();
+                    } catch (SQLException sqlException) {
+                        System.out.println("!!! SQLException: failed to alter Students table");
+                        System.out.println(sqlException.getMessage());
+                    }
+            } catch (Exception e) {
+                System.out.println("Invalid input, try again.");
+            }
+        }
+    public void DeleteExistingStudent(String First, String Last) {
+        String studentNameretry = null;
+        Scanner inputScannersub = new Scanner(System.in);
+        String sql =
+                "SELECT *\n" +
+                        "FROM students\n" +
+                        "WHERE students.first_name = ? and students.last_name = ?";
+        try {
+            Connection connection = getDatabaseConnection();
+            PreparedStatement res = connection.prepareStatement(sql);
+            res.setString(1, First);
+            res.setString(2, Last);
+            if (!res.executeQuery().next()) {
+                System.out.println("Invalid name, try entering a valid student name here: ");
+                studentNameretry = inputScannersub.next("First Last");
+                UpdateExistingStudentInformation(studentNameretry);
+            }
+            String sql1 = "DELETE\n" +
+                    "FROM students\n" +
+                    "WHERE students.first_name = ?  and students.last_name = ?";
+            String sql2 = "SELECT id" +
+                    " FROM students\n" +
+                    "WHERE first_name = ? and last_name = ?";
+            String sql3 = "DELETE\n" +
+                    "FROM registered_students\n" +
+                    " WHERE registered_students.student_id = ?";
+                try {
+                    PreparedStatement preparedStatement2 = connection.prepareStatement(sql2);
+                    preparedStatement2.setString(1, First);
+                    preparedStatement2.setString(2, Last);
+                    ResultSet res2 = preparedStatement2.executeQuery();
+                    PreparedStatement preparedStatement3 = connection.prepareStatement(sql3);
+                    System.out.println(res2.getString(1));
+                    preparedStatement3.setInt(1,res2.getInt(1));
+                    preparedStatement3.execute();
+                    PreparedStatement preparedStatement = connection.prepareStatement(sql1);
+                    preparedStatement.setString(1, First);
+                    preparedStatement.setString(2, Last);
+                    preparedStatement.execute();
+                    connection.close();
+                } catch (SQLException sqlException) {
+                    System.out.println("!!! SQLException: failed to alter Students table");
+                    System.out.println(sqlException.getMessage());
+                }
+        } catch (Exception e) {
+            System.out.println("Invalid input, please try again");
+        }
+    }
+    public void DeleteExistingStudent(String DOB) {
+        String studentDOBretry = null;
+        Scanner inputScannersub = new Scanner(System.in);
+        String sql =
+                "SELECT *\n" +
+                        "FROM students\n" +
+                        "WHERE students.birth_date = ?";
+        try {
+            Connection connection = getDatabaseConnection();
+            PreparedStatement res = connection.prepareStatement(sql);
+            res.setString(1, DOB);
+            if (!res.executeQuery().next()) {
+                System.out.println("Invalid Date of Birth, try entering a valid student Date of Birth here: ");
+                studentDOBretry = inputScannersub.next();
+                UpdateExistingStudentInformation(studentDOBretry);
+            }
+            String sql1 = "DELETE\n" +
+                    "FROM students\n" +
+                    "WHERE students.birth_date = ?";
+            String sql2 = "SELECT id" +
+                    " FROM students\n" +
+                    "WHERE birth_date = ?";
+            String sql3 = "DELETE\n" +
+                    "FROM registered_students\n" +
+                    " WHERE registered_students.student_id = ?";
+            try {
+                PreparedStatement preparedStatement2 = connection.prepareStatement(sql2);
+                preparedStatement2.setString(1, DOB);
+                ResultSet res2 = preparedStatement2.executeQuery();
+                PreparedStatement preparedStatement3 = connection.prepareStatement(sql3);
+                System.out.println(res2.getString(1));
+                preparedStatement3.setInt(1,res2.getInt(1));
+                preparedStatement3.execute();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql1);
+                preparedStatement.setString(1, DOB);
+                preparedStatement.execute();
+                connection.close();
+            } catch (SQLException sqlException) {
+                System.out.println("!!! SQLException: failed to alter Students table");
+                System.out.println(sqlException.getMessage());
+            }
+        }
+            catch(Exception e){
+            System.out.println("Invalid input, please try again.");
+            }
+    }
+
 
     public void listAllRegisteredStudents()
     {
