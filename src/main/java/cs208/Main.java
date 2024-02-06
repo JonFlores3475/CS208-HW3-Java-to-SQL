@@ -276,13 +276,49 @@ public class Main
         database.addNewStudent(new Student(firstName,lastName,birthDate));
     }
 
-    private static void menuUpdateExistingStudentInformation()
-    {
-        System.out.println("Enter the student's id:");
-        int studentID = Integer.parseInt(inputScanner.nextLine());
-        database.UpdateExistingStudentInformation(studentID);
-        System.out.println("Updating existing student information...");
-        // TODO: add your code here
+    private static void menuUpdateExistingStudentInformation() {
+        boolean valid = false;
+        int choice0;
+        while (!valid) {
+            try {
+                System.out.println("How would you like to search for your student?\n" +
+                        "0 - Student ID number\n" +
+                        "1 - First and Last name\n" +
+                        "2 - Date of Birth");
+                    choice0 = inputScanner.nextInt();
+                    switch (choice0) {
+                        case 0:
+                            System.out.println("Please enter an existing integer Student ID: ");
+                            int StudentID = inputScanner.nextInt();
+                            database.UpdateExistingStudentInformation(StudentID);
+                            break;
+                        case 1:
+                            System.out.println("Please enter the student first name and last name separated by a space: ");
+                            Scanner inputScanner2 = new Scanner(System.in);
+                            String fix = inputScanner2.nextLine();
+                            String[] fixsplit = fix.split(" ");
+                            String First = fixsplit[0];
+                            First = First.replace(" ","");
+                            String Last = fixsplit[1];
+                            Last = Last.replace(" ","");
+                            System.out.println(First);
+                            database.UpdateExistingStudentInformation(First, Last);
+                            break;
+                        case 2:
+                            System.out.println("Please enter the student date of birth in YYYY-MM-DD format: ");
+                            Scanner inputScanner3 = new Scanner(System.in);
+                            String DOB = inputScanner3.next();
+                            database.UpdateExistingStudentInformation(DOB);
+                            break;
+                    }
+            } catch (Exception e) {
+                e.getMessage();
+                e.printStackTrace();
+                System.out.println("Invalid input, please try again.");
+            }
+            System.out.println("Updating existing student information...");
+            valid = true;
+        }
     }
 
     private static void menuDeleteExistingStudent()
