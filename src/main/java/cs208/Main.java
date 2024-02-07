@@ -123,6 +123,9 @@ public class Main {
                 case 31:
                     menuAddStudentToClass();
                     break;
+                case 32:
+                    menuRemoveStudentFromClass();
+                    break;
 
                 //TODO: add your code here
 
@@ -421,6 +424,79 @@ public class Main {
                }
            }
             System.out.println("Student added to class!");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Please try again.");
+        }
+    }
+    public static void menuRemoveStudentFromClass() {
+        int choice0;
+        int choice1;
+        int classid = 0;
+        String classCode = null;
+        boolean proceed = false;
+        boolean proceed2 = false;
+        try {
+            while(!proceed){
+                System.out.println("How would you like to search for your class?\n" +
+                        "0 - Class ID\n" +
+                        "1 - Class code\n");
+                choice1 = inputScanner.nextInt();
+                switch (choice1) {
+                    case 0:
+                        System.out.println("Please enter your class id:\n");
+                        classid = inputScanner.nextInt();
+                        proceed = true;
+                        break;
+                    case 1:
+                        Scanner inputScanner4 = new Scanner(System.in);
+                        System.out.println("Pleas enter class code:\n");
+                        classCode = inputScanner4.nextLine();
+                        classid = database.classSearch(classCode);
+                        proceed = true;
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice, please try again.");
+                }
+            }
+            while(!proceed2) {
+                System.out.println("How would you like to search for your student?\n" +
+                        "0 - Student ID number\n" +
+                        "1 - First and Last name\n" +
+                        "2 - Date of Birth\n");
+                choice0 = inputScanner.nextInt();
+                switch (choice0) {
+                    case 0:
+                        System.out.println("Please enter an existing integer Student ID: ");
+                        int StudentID = inputScanner.nextInt();
+                        database.RemoveStudentFromClass(StudentID, classid);
+                        proceed2 = true;
+                        break;
+                    case 1:
+                        System.out.println("Please enter the student first name and last name separated by a space: ");
+                        Scanner inputScanner2 = new Scanner(System.in);
+                        String fix = inputScanner2.nextLine();
+                        String[] fixsplit = fix.split(" ");
+                        String First = fixsplit[0];
+                        First = First.replace(" ", "");
+                        String Last = fixsplit[1];
+                        Last = Last.replace(" ", "");
+                        database.RemoveStudentFromClass(First, Last, classid);
+                        proceed2 = true;
+                        break;
+                    case 2:
+                        System.out.println("Please enter the student date of birth in YYYY-MM-DD format: ");
+                        Scanner inputScanner3 = new Scanner(System.in);
+                        String DOB = inputScanner3.next();
+                        database.RemoveStudentFromClass(DOB, classid);
+                        proceed2 = true;
+                        break;
+                    default:
+                        System.out.println("Invalid input, please try again.");
+                }
+            }
+            System.out.println("Student removed from class!");
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println("Please try again.");

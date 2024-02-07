@@ -1149,6 +1149,127 @@ public class Database
             System.out.println(sqlException.getMessage());
         }
     }
+    public void RemoveStudentFromClass(int StudentID, int classID){
+        Scanner scannerSub = new Scanner(System.in);
+        String sql = "DELETE \n" +
+                "FROM registered_students\n" +
+                "WHERE student_id = ? and class_id = ?";
+        String sql1 = "SELECT id\n" +
+                "FROM students\n" +
+                "WHERE id = ?";
+        String sql2 = "SELECT id\n" +
+                "FROM classes\n" +
+                "WHERE id = ?";
+        try {
+            Connection connection = getDatabaseConnection();
+            PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
+            preparedStatement1.setInt(1, StudentID);
+            ResultSet res = preparedStatement1.executeQuery();
+            if (!res.next()) {
+                System.out.println("No such Student ID, please try again here: \n");
+                StudentID = scannerSub.nextInt();
+                connection.close();
+                RemoveStudentFromClass(StudentID, classID);
+            }
+            PreparedStatement preparedStatement2 = connection.prepareStatement(sql2);
+            preparedStatement2.setInt(1, classID);
+            ResultSet res2 = preparedStatement2.executeQuery();
+            if (!res2.next()) {
+                System.out.println("No such class ID, please try again here: \n");
+                classID = scannerSub.nextInt();
+                connection.close();
+                RemoveStudentFromClass(StudentID, classID);
+            }
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, StudentID);
+            preparedStatement.setInt(2, classID);
+            preparedStatement.execute();
+            connection.close();
+        } catch (SQLException sqlException) {
+            System.out.println(sqlException.getMessage());
+        }
+    }
+    public void RemoveStudentFromClass(String First, String Last, int classID) {
+        Scanner scannerSub = new Scanner(System.in);
+        int StudentID;
+        String sql1 = "SELECT id\n" +
+                "FROM students\n" +
+                "WHERE first_name = ? and last_name = ?";
+        String sql2 = "SELECT id\n" +
+                "FROM classes\n" +
+                "WHERE id = ?";
+        try {
+            Connection connection = getDatabaseConnection();
+            PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
+            preparedStatement1.setString(1, First);
+            preparedStatement1.setString(2, Last);
+            ResultSet res = preparedStatement1.executeQuery();
+            if (!res.next()) {
+                System.out.println("Invalid name, try entering a valid student name here: ");
+                String fix = scannerSub.nextLine();
+                String[] fixsplit = fix.split(" ");
+                First = fixsplit[0];
+                First = First.replace(" ", "");
+                Last = fixsplit[1];
+                Last = Last.replace(" ", "");
+                connection.close();
+                RemoveStudentFromClass(First, Last, classID);
+            }
+            StudentID = res.getInt(1);
+            PreparedStatement preparedStatement2 = connection.prepareStatement(sql2);
+            preparedStatement2.setInt(1, classID);
+            ResultSet res2 = preparedStatement2.executeQuery();
+            if (!res2.next()) {
+                System.out.println("No such class ID, please try again here: \n");
+                classID = scannerSub.nextInt();
+                connection.close();
+                RemoveStudentFromClass(StudentID, classID);
+            }
+            classID = res2.getInt(1);
+            connection.close();
+            RemoveStudentFromClass(StudentID, classID);
+        } catch (SQLException sqlException) {
+            System.out.println(sqlException.getMessage());
+        }
+    }
+    public void RemoveStudentFromClass(String DOB, int classID) {
+        Scanner scannerSub = new Scanner(System.in);
+        int StudentID;
+        String sql1 = "SELECT id\n" +
+                "FROM students\n" +
+                "WHERE birth_date = ?";
+        String sql2 = "SELECT id\n" +
+                "FROM classes\n" +
+                "WHERE id = ?";
+        try {
+            Connection connection = getDatabaseConnection();
+            PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
+            preparedStatement1.setString(1, DOB);
+            ResultSet res = preparedStatement1.executeQuery();
+            if (!res.next()) {
+                System.out.println("Invalid date of birth, try entering a valid student name here: ");
+                DOB = scannerSub.nextLine();
+                connection.close();
+                RemoveStudentFromClass(DOB, classID);
+            }
+            StudentID = res.getInt(1);
+            PreparedStatement preparedStatement2 = connection.prepareStatement(sql2);
+            preparedStatement2.setInt(1, classID);
+            ResultSet res2 = preparedStatement2.executeQuery();
+            if (!res2.next()) {
+                System.out.println("No such class ID, please try again here: \n");
+                classID = scannerSub.nextInt();
+                connection.close();
+                RemoveStudentFromClass(StudentID, classID);
+            }
+            classID = res2.getInt(1);
+            connection.close();
+            RemoveStudentFromClass(StudentID, classID);
+            connection.close();
+        } catch (SQLException sqlException) {
+            System.out.println(sqlException.getMessage());
+        }
+    }
 private void printTableHeader(String[] listOfColumnNames)
 {
     System.out.print("| ");
