@@ -992,6 +992,30 @@ public class Database
         }
         return classid;
     }
+    public String classSearch(int classID) {
+        String classCode = null;
+        int classIDretry = 0;
+        Scanner inputScannersub = new Scanner(System.in);
+        String sql = "SELECT code\n" +
+                "FROM classes\n" +
+                "WHERE id = ?";
+        try {
+            Connection connection = getDatabaseConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, classID);
+            ResultSet resultSet = statement.executeQuery();
+            if (!resultSet.next()) {
+                System.out.println("No such class, please enter a valid class code here: \n");
+                classIDretry = inputScannersub.nextInt();
+                classSearch(classIDretry);
+            }
+            classCode = resultSet.getString(1);
+            connection.close();
+        } catch (SQLException sqlException) {
+            System.out.println(sqlException.getMessage());
+        }
+        return classCode;
+    }
     public void AddStudentToClass(int StudentID, int classID) {
         Scanner scannerSub = new Scanner(System.in);
         String sql = "INSERT INTO registered_students (class_id, student_id, signup_date)\n" +
@@ -1267,6 +1291,46 @@ public class Database
             RemoveStudentFromClass(StudentID, classID);
             connection.close();
         } catch (SQLException sqlException) {
+            System.out.println(sqlException.getMessage());
+        }
+    }
+    public void showAllStudentsInClass(String classCode){
+        Scanner scannersub = new Scanner(System.in);
+        String sql =
+                "SELECT *\n" +
+                        "FROM(\n"+
+                "SELECT students.id, students.first_name || ' ' || students.last_name AS student_full_name, classes.code, classes.title\n" +
+                "FROM students\n" +
+                "INNER JOIN registered_students ON students.id = registered_students.student_id\n" +
+                "INNER JOIN classes ON classes.id = registered_students.class_id\n" +
+                "ORDER BY student_id)\n" +
+                        "WHERE code = ?;" ;
+        try{
+            Connection connection = getDatabaseConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, classCode);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(!resultSet.next()){
+                System.out.println("Either no students are enrolled in this class, or this class ID does not exist, please try again by entering a new classs ID here: \n");
+                classCode = scannersub.nextLine();
+                showAllStudentsInClass(classCode);
+            }
+            printTableHeader(new String[]{"students.id", "student_full_name", "classes.code", "classes.title"});
+
+            while (resultSet.next())
+            {
+                int id = resultSet.getInt("id");
+                String studentFullName = resultSet.getString("student_full_name");
+                String code = resultSet.getString("code");
+                String title = resultSet.getString("title");
+
+                System.out.printf("| %d | %s | %s | %s |%n", id, studentFullName, code, title);
+            }
+        connection.close();
+        }
+        catch (SQLException sqlException)
+        {
+            System.out.println("!!! SQLException: failed to query the registered_students table. Make sure you executed the schema.sql and seeds.sql scripts");
             System.out.println(sqlException.getMessage());
         }
     }

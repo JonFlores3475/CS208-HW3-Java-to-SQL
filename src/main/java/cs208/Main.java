@@ -126,6 +126,9 @@ public class Main {
                 case 32:
                     menuRemoveStudentFromClass();
                     break;
+                case 33:
+                    menuShowAllStudentsInClass();
+                    break;
 
                 //TODO: add your code here
 
@@ -133,6 +136,7 @@ public class Main {
                 default:
                     System.out.println("Invalid choice. Please enter a number such as 0, 1, 2, 10, 11, etc.");
             }
+            shouldExit = true;
         }
     }
 
@@ -497,6 +501,42 @@ public class Main {
                 }
             }
             System.out.println("Student removed from class!");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Please try again.");
+        }
+    }
+    public static void menuShowAllStudentsInClass() {
+        int choice1;
+        int classid = 0;
+        String classCode = null;
+        boolean proceed = false;
+        try {
+            while (!proceed) {
+                System.out.println("How would you like to search for your class?\n" +
+                        "0 - Class ID\n" +
+                        "1 - Class code\n");
+                choice1 = inputScanner.nextInt();
+                switch (choice1) {
+                    case 0:
+                        System.out.println("Please enter your class id:\n");
+                        classid = inputScanner.nextInt();
+                        classCode = database.classSearch(classid);
+                        proceed = true;
+                        break;
+                    case 1:
+                        Scanner inputScanner4 = new Scanner(System.in);
+                        System.out.println("Pleas enter class code:\n");
+                        classCode = inputScanner4.nextLine();
+                        proceed = true;
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice, please try again.");
+                }
+            }
+            System.out.println("Listing all registered students...");
+            database.showAllStudentsInClass(classCode);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println("Please try again.");
