@@ -1,9 +1,11 @@
 package cs208;
 import java.sql.*;
+import java.util.Locale;
 import java.util.Scanner;
 
 import org.sqlite.SQLiteConfig;
 
+import javax.print.attribute.standard.DateTimeAtCreation;
 import java.sql.Date;
 
 
@@ -17,8 +19,7 @@ public class Database
 {
     private final String sqliteFileName;
 
-    public Database(String sqliteFileName)
-    {
+    public Database(String sqliteFileName) {
         this.sqliteFileName = sqliteFileName;
     }
 
@@ -177,19 +178,17 @@ public class Database
         }
     }
 
-    public void listAllClasses()
-    {
+    public void listAllClasses() {
         String sql =
                 "SELECT id, code, title, description, max_students\n" +
-                "FROM classes;";
+                        "FROM classes;";
 
         try
-        (
-                Connection connection = getDatabaseConnection();
-                Statement sqlStatement = connection.createStatement();
-                ResultSet resultSet = sqlStatement.executeQuery(sql);
-        )
-        {
+                (
+                        Connection connection = getDatabaseConnection();
+                        Statement sqlStatement = connection.createStatement();
+                        ResultSet resultSet = sqlStatement.executeQuery(sql);
+                ) {
             //print table header
             printTableHeader(new String[]{"id", "code", "title", "description", "max_students"});
 
@@ -197,8 +196,7 @@ public class Database
             // advances to the next returned record (row)
             // or
             // returns false if there are no more records
-            while (resultSet.next())
-            {
+            while (resultSet.next()) {
                 // extract the values from the current row
                 int id = resultSet.getInt("id");
                 String code = resultSet.getString("code");
@@ -209,9 +207,7 @@ public class Database
                 // print the results of the current row
                 System.out.printf("| %d | %s | %s | %s | %d |%n", id, code, title, description, maxStudents);
             }
-        }
-        catch (SQLException sqlException)
-        {
+        } catch (SQLException sqlException) {
             System.out.println("!!! SQLException: failed to query the classes table. Make sure you executed the schema.sql and seeds.sql scripts");
             System.out.println(sqlException.getMessage());
         }
@@ -430,6 +426,7 @@ public class Database
             if (!ResultSet0.next()) {
                 System.out.println("Invalid ID number, try entering a valid student ID here: ");
                 studentIDretry = inputScannersub.nextInt();
+                connection.close();
                 UpdateExistingStudentInformation(studentIDretry);
             }
                 while (!shouldexit) {
@@ -470,6 +467,7 @@ public class Database
                                         connection.close();
                                     } catch (Exception e) {
                                         System.out.println("Invalid input, please try again.");
+                                        System.out.println(e.getMessage());
                                     }
                                 }
                                 break;
@@ -490,6 +488,7 @@ public class Database
                                     }
                                     catch(Exception e){
                                         System.out.println("Invalid input, please try again.");
+                                        System.out.println(e.getMessage());
                                     }
                                 }
                                 break;
@@ -511,6 +510,7 @@ public class Database
                                     }
                                     catch(Exception e){
                                         System.out.println("Invalid input, please try again.");
+                                        System.out.println(e.getMessage());
                                     }
                                 }
                                 break;
@@ -531,9 +531,12 @@ public class Database
                                     }
                                     catch(Exception e){
                                         System.out.println("Invalid input, please try again.");
+                                        System.out.println(e.getMessage());
                                     }
                                 }
                                 break;
+                            default:
+                                System.out.println("Invalid input, please try again.");
                         }
                     }
             }
@@ -564,6 +567,7 @@ public class Database
             if (!res.executeQuery().next()) {
                 System.out.println("Invalid Date of Birth, try entering a valid student Date of Birth here: ");
                 studentDOBretry = inputScannersub.next();
+                connection.close();
                 UpdateExistingStudentInformation(studentDOBretry);
             }
             while (!shouldexit) {
@@ -604,6 +608,7 @@ public class Database
                                 connection.close();
                             } catch (Exception e) {
                                 System.out.println("Invalid input, please try again.");
+                                System.out.println(e.getMessage());
                             }
                         }
                         break;
@@ -624,6 +629,7 @@ public class Database
                             }
                             catch(Exception e){
                                 System.out.println("Invalid input, please try again.");
+                                System.out.println(e.getMessage());
                             }
                         }
                         break;
@@ -645,6 +651,7 @@ public class Database
                             }
                             catch(Exception e){
                                 System.out.println("Invalid input, please try again.");
+                                System.out.println(e.getMessage());
                             }
                         }
                         break;
@@ -665,9 +672,12 @@ public class Database
                             }
                             catch(Exception e){
                                 System.out.println("Invalid input, please try again.");
+                                System.out.println(e.getMessage());
                             }
                         }
                         break;
+                    default:
+                        System.out.println("Invalid input, please try again.");
                 }
             }
         }
@@ -698,8 +708,14 @@ public class Database
             res.setString(2, Last);
             if (!res.executeQuery().next()) {
                 System.out.println("Invalid name, try entering a valid student name here: ");
-                studentNameretry = inputScannersub.next("First Last");
-                UpdateExistingStudentInformation(studentNameretry);
+                String fix = inputScannersub.nextLine();
+                String[] fixsplit = fix.split(" ");
+                First = fixsplit[0];
+                First = First.replace(" ", "");
+                Last = fixsplit[1];
+                Last = Last.replace(" ", "");
+                connection.close();
+                UpdateExistingStudentInformation(First, Last);
             }
             while (!shouldexit) {
                 System.out.println("What would you like to alter?");
@@ -733,6 +749,7 @@ public class Database
                                 connection.close();
                             } catch (Exception e) {
                                 System.out.println("Invalid input, please try again.");
+                                System.out.println(e.getMessage());
                             }
                         }
                         break;
@@ -754,6 +771,7 @@ public class Database
                             }
                             catch(Exception e){
                                 System.out.println("Invalid input, please try again.");
+                                System.out.println(e.getMessage());
                             }
                         }
                         break;
@@ -775,6 +793,7 @@ public class Database
                             }
                             catch(Exception e){
                                 System.out.println("Invalid input, please try again.");
+                                System.out.println(e.getMessage());
                             }
                         }
                         break;
@@ -796,9 +815,12 @@ public class Database
                             }
                             catch(Exception e){
                                 System.out.println("Invalid input, please try again.");
+                                System.out.println(e.getMessage());
                             }
                         }
                         break;
+                    default:
+                        System.out.println("Invalid input, please try again.");
                 }
             }
         }
@@ -861,6 +883,7 @@ public class Database
             if (!res.executeQuery().next()) {
                 System.out.println("Invalid name, try entering a valid student name here: ");
                 studentNameretry = inputScannersub.next("First Last");
+                connection.close();
                 UpdateExistingStudentInformation(studentNameretry);
             }
             String sql1 = "DELETE\n" +
@@ -892,6 +915,7 @@ public class Database
                 }
         } catch (Exception e) {
             System.out.println("Invalid input, please try again");
+            System.out.println(e.getMessage());
         }
     }
     public void DeleteExistingStudent(String DOB) {
@@ -908,6 +932,7 @@ public class Database
             if (!res.executeQuery().next()) {
                 System.out.println("Invalid Date of Birth, try entering a valid student Date of Birth here: ");
                 studentDOBretry = inputScannersub.next();
+                connection.close();
                 UpdateExistingStudentInformation(studentDOBretry);
             }
             String sql1 = "DELETE\n" +
@@ -938,10 +963,158 @@ public class Database
         }
             catch(Exception e){
             System.out.println("Invalid input, please try again.");
+                System.out.println(e.getMessage());
             }
     }
 
-
+    public int classSearch(String classCode) {
+        int classid = 0;
+        String classCodeRetry = null;
+        Scanner inputScannersub = new Scanner(System.in);
+        String sql = "SELECT id\n" +
+                "FROM classes\n" +
+                "WHERE code = ?";
+        try {
+            Connection connection = getDatabaseConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, classCode);
+            ResultSet resultSet = statement.executeQuery();
+            if (!resultSet.next()) {
+                System.out.println("No such class, please enter a valid class code here: \n");
+                classCodeRetry = inputScannersub.nextLine();
+                connection.close();
+                classSearch(classCodeRetry);
+            }
+            classid = resultSet.getInt(1);
+            connection.close();
+        } catch (SQLException sqlException) {
+            System.out.println(sqlException.getMessage());
+        }
+        return classid;
+    }
+    public void AddStudentToClass(int StudentID, int classID) {
+        Scanner scannerSub = new Scanner(System.in);
+        String sql = "INSERT INTO registered_students (class_id, student_id, signup_date)\n" +
+                "VALUES (?,?,?)";
+        String sql1 = "SELECT id\n" +
+                "FROM students\n" +
+                "WHERE id = ?";
+        String sql2 = "SELECT id\n" +
+                "FROM classes\n" +
+                "WHERE id = ?";
+        try {
+            Connection connection = getDatabaseConnection();
+            PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
+            preparedStatement1.setInt(1, StudentID);
+            ResultSet res = preparedStatement1.executeQuery();
+            if (!res.next()) {
+                System.out.println("No such Student ID, please try again here: \n");
+                StudentID = scannerSub.nextInt();
+                connection.close();
+                AddStudentToClass(StudentID, classID);
+            }
+            PreparedStatement preparedStatement2 = connection.prepareStatement(sql2);
+            preparedStatement2.setInt(1, classID);
+            ResultSet res2 = preparedStatement2.executeQuery();
+            if (!res2.next()) {
+                System.out.println("No such class ID, please try again here: \n");
+                classID = scannerSub.nextInt();
+                connection.close();
+                AddStudentToClass(StudentID, classID);
+            }
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, classID);
+            preparedStatement.setInt(2, StudentID);
+            java.util.Date utilDate = new java.util.Date();
+            java.sql.Date timestamp = new java.sql.Date(utilDate.getTime());
+            preparedStatement.setDate(3, timestamp);
+            preparedStatement.execute();
+            connection.close();
+        } catch (SQLException sqlException) {
+            System.out.println(sqlException.getMessage());
+        }
+    }
+    public void AddStudentToClass(String First, String Last, int classID) {
+        Scanner scannerSub = new Scanner(System.in);
+        int StudentID;
+        String sql1 = "SELECT id\n" +
+                "FROM students\n" +
+                "WHERE first_name = ? and last_name = ?";
+        String sql2 = "SELECT id\n" +
+                "FROM classes\n" +
+                "WHERE id = ?";
+        try {
+            Connection connection = getDatabaseConnection();
+            PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
+            preparedStatement1.setString(1, First);
+            preparedStatement1.setString(2, Last);
+            ResultSet res = preparedStatement1.executeQuery();
+            if (!res.next()) {
+                System.out.println("Invalid name, try entering a valid student name here: ");
+                String fix = scannerSub.nextLine();
+                String[] fixsplit = fix.split(" ");
+                First = fixsplit[0];
+                First = First.replace(" ", "");
+                Last = fixsplit[1];
+                Last = Last.replace(" ", "");
+                connection.close();
+                AddStudentToClass(First, Last, classID);
+            }
+            StudentID = res.getInt(1);
+            PreparedStatement preparedStatement2 = connection.prepareStatement(sql2);
+            preparedStatement2.setInt(1, classID);
+            ResultSet res2 = preparedStatement2.executeQuery();
+            if (!res2.next()) {
+                System.out.println("No such class ID, please try again here: \n");
+                classID = scannerSub.nextInt();
+                connection.close();
+                AddStudentToClass(StudentID, classID);
+            }
+            classID = res2.getInt(1);
+            connection.close();
+            AddStudentToClass(StudentID, classID);
+        } catch (SQLException sqlException) {
+            System.out.println(sqlException.getMessage());
+        }
+    }
+    public void AddStudentToClass(String DOB, int classID) {
+        Scanner scannerSub = new Scanner(System.in);
+        int StudentID;
+        String sql1 = "SELECT id\n" +
+                "FROM students\n" +
+                "WHERE birth_date = ?";
+        String sql2 = "SELECT id\n" +
+                "FROM classes\n" +
+                "WHERE id = ?";
+        try {
+            Connection connection = getDatabaseConnection();
+            PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
+            preparedStatement1.setString(1, DOB);
+            ResultSet res = preparedStatement1.executeQuery();
+            if (!res.next()) {
+                System.out.println("Invalid date of birth, try entering a valid student name here: ");
+                DOB = scannerSub.nextLine();
+                connection.close();
+                AddStudentToClass(DOB, classID);
+            }
+            StudentID = res.getInt(1);
+            PreparedStatement preparedStatement2 = connection.prepareStatement(sql2);
+            preparedStatement2.setInt(1, classID);
+            ResultSet res2 = preparedStatement2.executeQuery();
+            if (!res2.next()) {
+                System.out.println("No such class ID, please try again here: \n");
+                classID = scannerSub.nextInt();
+                connection.close();
+                AddStudentToClass(StudentID, classID);
+            }
+            classID = res2.getInt(1);
+            connection.close();
+            AddStudentToClass(StudentID, classID);
+            connection.close();
+        } catch (SQLException sqlException) {
+            System.out.println(sqlException.getMessage());
+        }
+    }
     public void listAllRegisteredStudents()
     {
         String sql =
@@ -976,15 +1149,14 @@ public class Database
             System.out.println(sqlException.getMessage());
         }
     }
-
-    private void printTableHeader(String[] listOfColumnNames)
+private void printTableHeader(String[] listOfColumnNames)
+{
+    System.out.print("| ");
+    for (String columnName : listOfColumnNames)
     {
-        System.out.print("| ");
-        for (String columnName : listOfColumnNames)
-        {
-            System.out.print(columnName + " | ");
-        }
-        System.out.println();
-        System.out.println(Utils.characterRepeat('-', 80));
+        System.out.print(columnName + " | ");
     }
+    System.out.println();
+    System.out.println(Utils.characterRepeat('-', 80));
+}
 }
