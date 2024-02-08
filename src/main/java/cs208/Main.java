@@ -129,6 +129,9 @@ public class Main {
                 case 33:
                     menuShowAllStudentsInClass();
                     break;
+                case 34:
+                    menuShowAllStudentClasses();
+                    break;
 
                 //TODO: add your code here
 
@@ -339,7 +342,7 @@ public class Main {
         System.out.println("Deleting existing student...");
     }
 
-    public static void menuAddStudentToClass() {
+    private static void menuAddStudentToClass() {
         int choice0;
         int choice1;
         int classid = 0;
@@ -433,7 +436,7 @@ public class Main {
             System.out.println("Please try again.");
         }
     }
-    public static void menuRemoveStudentFromClass() {
+    private static void menuRemoveStudentFromClass() {
         int choice0;
         int choice1;
         int classid = 0;
@@ -506,7 +509,7 @@ public class Main {
             System.out.println("Please try again.");
         }
     }
-    public static void menuShowAllStudentsInClass() {
+    private static void menuShowAllStudentsInClass() {
         int choice1;
         int classid = 0;
         String classCode = null;
@@ -540,6 +543,46 @@ public class Main {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println("Please try again.");
+        }
+    }
+    private static void menuShowAllStudentClasses(){
+        int choice0;
+        try {
+            System.out.println("How would you like to search for your student?\n" +
+                    "0 - Student ID number\n" +
+                    "1 - First and Last name\n" +
+                    "2 - Date of Birth");
+            choice0 = inputScanner.nextInt();
+            switch (choice0) {
+                case 0:
+                    System.out.println("Please enter an existing integer Student ID: ");
+                    int StudentID = inputScanner.nextInt();
+                    database.showAllStudentClasses(StudentID);
+                    break;
+                case 1:
+                    System.out.println("Please enter the student first name and last name separated by a space: ");
+                    Scanner inputScanner2 = new Scanner(System.in);
+                    String fix = inputScanner2.nextLine();
+                    String[] fixsplit = fix.split(" ");
+                    String First = fixsplit[0];
+                    First = First.replace(" ", "");
+                    String Last = fixsplit[1];
+                    Last = Last.replace(" ", "");
+                    database.showAllStudentClasses(First, Last);
+                    break;
+                case 2:
+                    System.out.println("Please enter the student date of birth in YYYY-MM-DD format: ");
+                    Scanner inputScanner3 = new Scanner(System.in);
+                    String DOB = inputScanner3.next();
+                    database.showAllStudentClasses(DOB);
+                    break;
+                default:
+                    System.out.println("Invalid choice, please try again.");
+                    return;
+            }
+        } catch (Exception e) {
+            System.out.println("Invalid input, please try again.");
+            return;
         }
     }
     private static void menuListAllRegisteredStudents()
