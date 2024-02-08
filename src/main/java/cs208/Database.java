@@ -18,6 +18,7 @@ import java.sql.Date;
 public class Database
 {
     private final String sqliteFileName;
+    public Class oldClassInfo;
 
     public Database(String sqliteFileName) {
         this.sqliteFileName = sqliteFileName;
@@ -257,6 +258,25 @@ public class Database
             System.out.println(sqlException.getMessage());
         }
     }
+    public Class getOldClassInfo(int classID){
+        String retVal = "SELECT *\n" +
+                "FROM classes\n" +
+                "WHERE id = ?";
+        try {
+            Connection connection = getDatabaseConnection();
+            PreparedStatement ret = connection.prepareStatement(retVal);
+            ret.setInt(1, classID);
+            ResultSet resultSet = ret.executeQuery();
+            oldClassInfo = new Class(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getInt(5));
+            connection.close();
+
+        }
+        catch(SQLException sqlException){
+            System.out.println("!!! SQLException: failed to update the class with id = " + classID);
+            System.out.println(sqlException.getMessage());
+        }
+        return oldClassInfo;
+    }
 
     public void updateExistingClassInformation(Class classToUpdate)
     {
@@ -265,12 +285,9 @@ public class Database
                 "SET code = ?, title = ?, description = ?, max_students = ?\n" +
                 "WHERE id = ?;";
 
-        try
-        (
+        try {
             Connection connection = getDatabaseConnection();
             PreparedStatement sqlStatement = connection.prepareStatement(sql);
-        )
-        {
             sqlStatement.setString(1, classToUpdate.getCode());
             sqlStatement.setString(2, classToUpdate.getTitle());
             sqlStatement.setString(3, classToUpdate.getDescription());

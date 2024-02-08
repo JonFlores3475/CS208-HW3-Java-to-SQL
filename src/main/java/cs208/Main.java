@@ -192,13 +192,19 @@ public class Main {
         String title = null;
         String description = null;
         int maxStudents = 0;
+        Class oldClassInfo;
         try {
             System.out.print("Enter the existing class id you want to update: ");
             id = Integer.parseInt(inputScanner.nextLine());
+            oldClassInfo = database.getOldClassInfo(id);
 
             System.out.print("Enter a new class code: ");
-            code = inputScanner.nextLine();
-
+            String check = inputScanner.nextLine();
+            if(check.isBlank() || check.equals(oldClassInfo.getCode())){
+                code = oldClassInfo.getCode();
+            } else {
+                code = check;
+            }
             System.out.print("Enter a new class title: ");
             title = inputScanner.nextLine();
 
@@ -208,6 +214,7 @@ public class Main {
             System.out.print("Enter a new class max students: ");
             maxStudents = Integer.parseInt(inputScanner.nextLine());
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return;
         }
 
