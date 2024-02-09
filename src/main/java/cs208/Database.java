@@ -481,7 +481,6 @@ public class Database
                                             sqlStatement2.setInt(2,studentID);
                                             sqlStatement2.execute();
                                         }
-                                        connection.close();
                                     } catch (Exception e) {
                                         System.out.println("Invalid input, please try again.");
                                         System.out.println(e.getMessage());
